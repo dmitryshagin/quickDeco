@@ -22,59 +22,7 @@ public class zhl16 {
     public Double currentTime=0.0;
     public double currentN2=0.0;
     public double currentHe=0.0;
-    
-    public double dt=0.1;
-    public ArrayList<planRecord> divePlan;
-    public ArrayList<DiveRecord> dive;
-    private ArrayList<Gas> decoGasList;
-    private int iterationsLimit;
-    
-    public void cleanDive(){
-        dive.clear();
-    }
-    
-    public void cleanDivePlan(){
-        divePlan.clear();
-        iterationsLimit=10000;
-    }
-    
-    public void addPlanRecord(planRecord record){
-        divePlan.add(record);
-    }
-    
-    
-    public void cleanDecoGasList(){
-        decoGasList.clear();
-    }
-    
-    public void addDecoGas(Gas gas){
-        decoGasList.add(gas);
-    }
-    
-    public double getLastStop() {
-        return lastStop;
-    }
-
-    public void setLastStop(double lastStop) {
-        this.lastStop = lastStop;
-    }
     private double gfLow=1.0;
-
-    public double getGfLow() {
-        return gfLow;
-    }
-
-    public void setGfLow(double gfLow) {
-        this.gfLow = gfLow;
-    }
-
-    public double getGfHigh() {
-        return gfHigh;
-    }
-
-    public void setGfHigh(double gfHigh) {
-        this.gfHigh = gfHigh;
-    }
     private double gfHigh=1.0;
     private double gf=gfLow;
     private double gfSlope=1.0;
@@ -82,15 +30,15 @@ public class zhl16 {
     public static final double ATA=1.01325;
     public static final int COMPARTMENTS=17;
 
-    public double getSeaLevel() {
-        return seaLevel;
-    }
-
-    public void setSeaLevel(double seaLevel) {
-        this.seaLevel = seaLevel;
-    }
+    
+    public double dt=0.1;
+    public ArrayList<planRecord> divePlan;
+    public ArrayList<DiveRecord> dive;
+    private ArrayList<Gas> decoGasList;
+    private int iterationsLimit;
 
     
+
     public zhl16(){
         gf=gfLow;
         divePlan=new ArrayList();
@@ -109,18 +57,6 @@ public class zhl16 {
         }
     }
     
-    public double getDecoStep() {
-        return decoStep;
-    }
-
-    public void setDecoStep(double decoStep) {
-        this.decoStep = decoStep;
-    }
-
-    
-    public static String trunc(double in){
-        return String.valueOf(((double)(new Double(in*10.0).intValue()))/10.0);
-    }
     
     private void printCompartments(){
         System.out.println("\ndepth="+currentDepth+", time="+trunc(currentTime)+", He="+trunc(currentHe)+", N2="+trunc(currentN2)+", GF="+trunc(getGF()));
@@ -158,30 +94,30 @@ public class zhl16 {
         {02.737, 0.9544, 05.176, 0.9171},
         {02.523, 0.9602, 05.172, 0.9217},
         {02.327, 0.9653, 05.119, 0.9267}
-};
+    };
 
     
-// Compartiment half-life, in minute
-//  N2     He 
-    public static final double CompartmentsHT[][] = {
-    {4.0,   1.51},
-    {5.0,   1.88},
-    {8.0,   3.02},
-    {12.5,  4.72},
-    {18.5,  6.99},
-    {27.0,  10.21},
-    {38.3,  14.48},
-    {54.3,  20.53},
-    {77.0,  29.11},
-    {109.0, 41.20},
-    {146.0, 55.19},
-    {187.0, 70.69},
-    {239.0, 90.34},
-    {305.0, 115.29},
-    {390.0, 147.42},
-    {498.0, 188.24},
-    {635.0, 240.03}
-};
+    // Compartiment half-life, in minute
+    //  N2     He 
+        public static final double CompartmentsHT[][] = {
+        {4.0,   1.51},
+        {5.0,   1.88},
+        {8.0,   3.02},
+        {12.5,  4.72},
+        {18.5,  6.99},
+        {27.0,  10.21},
+        {38.3,  14.48},
+        {54.3,  20.53},
+        {77.0,  29.11},
+        {109.0, 41.20},
+        {146.0, 55.19},
+        {187.0, 70.69},
+        {239.0, 90.34},
+        {305.0, 115.29},
+        {390.0, 147.42},
+        {498.0, 188.24},
+        {635.0, 240.03}
+    };
     
     
     public double Pn[]={0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0};
@@ -214,7 +150,6 @@ public class zhl16 {
             currentDepth=record.depth;
         }
         
-        
         applyDeco(record.depth);
         
         while(record.depth<currentDepth){
@@ -227,80 +162,37 @@ public class zhl16 {
         }
         
         truncateCurrentTime();
-        
 
         DiveRecord recordLogSeg =new DiveRecord(currentDepth,new Gas(1.0-currentN2-currentHe,currentHe,10000.0));
         recordLogSeg.timeStart=currentTime;
-        updatePressure(record.depth/zhl16.ATA+getSeaLevel(),currentN2,currentHe,record.time-currentTime);
+        if(dive.isEmpty()){
+            //для первого сегмента учтем возможность мгновенного спуска
+            updatePressure(record.depth/zhl16.ATA+getSeaLevel(),currentN2,currentHe,record.time-currentTime);
+        }else{
+            updatePressure(record.depth/zhl16.ATA+getSeaLevel(),currentN2,currentHe,record.time);
+        }
         setGfSlopeAtDepth(record.depth);
+        setGfAtDepth(currentDepth);
         recordLogSeg.timeEnd=currentTime;
         printCompartments();
         dive.add(recordLogSeg);
-        
     }
 
     public boolean applyDeco(double ceiling) {
-        double currStop=getStop();
         boolean needDeco=false;
-        double oldStop=currentDepth;
-        DiveRecord recordLog=new DiveRecord(currentDepth,new Gas(1.0-currentN2-currentHe,currentHe,10000.0));
-        
-        while(currStop>ceiling&&iterationsLimit>0){
-            
-           needDeco=true;
-           iterationsLimit--;
-             
-           while(currentDepth>currStop){
-                currentDepth-=ascRate*dt;
-                if(currentDepth<=currStop){
-                    currentDepth=currStop;
-                    recordLog.depth=currentDepth;
-                    truncateCurrentTime();
-                    recordLog.timeStart=currentTime;
-                }
-                updatePressure(currentDepth/zhl16.ATA+getSeaLevel(),currentN2,currentHe,dt);
+        while(getStop()>ceiling&&iterationsLimit>0){
+            needDeco=true;
+            iterationsLimit--;
+            if(performAscend(getStop())>ceiling){
+                performLinear(getStop());
             }
-            
-            setGfAtDepth(currentDepth);
-            updateCurrentGas();
-            recordLog.gas.N2=currentN2;
-            recordLog.gas.He=currentHe;
-            recordLog.gas.O2=1.0-currentHe-currentN2;
-            
-            currStop=getStop();
-            
-            if(oldStop!=currStop){
-                truncateCurrentTime();
-                printCompartments();
-                recordLog.timeEnd=currentTime;
-                dive.add(recordLog);
-                recordLog=new DiveRecord(currentDepth,new Gas(1.0-currentN2-currentHe,currentHe,10000.0));
-                recordLog.timeStart=currentTime;
-
-                oldStop=currStop;
-            }
-            updatePressure(currentDepth/zhl16.ATA+getSeaLevel(),currentN2,currentHe,1.0);            
-            
         }
-        
-        if(needDeco){
-            System.out.println("iterations left="+iterationsLimit+" total time="+currentTime);
-        }
-        
         return needDeco;
     }
 
-    public void cleanAll() {
-        cleanDivePlan();
-        cleanDecoGasList();
-        dive.clear();
-        currentDepth=0.0;
-        currentTime=0.0;
-        currentHe=0.0;
-        currentN2=0.0;
-    }
-
-    private void updateCurrentGas() {
+    private boolean updateCurrentGas() {
+        Gas oldGas=new Gas(1.0-currentHe-currentN2,currentHe,10000.0);
+        boolean chagned=false;
         double selectedMOD=10000.0;
         for(Gas gas:decoGasList){
             if(gas.MOD>=currentDepth){
@@ -311,6 +203,57 @@ public class zhl16 {
                 }
             }
         }
+        //если газ изменился - остановимся на минуту для смены
+        if(oldGas.N2!=currentN2||oldGas.He!=currentHe){
+            chagned=true;
+            //System.out.println("Gas changed at "+currentDepth );
+            //updatePressure(currentDepth/zhl16.ATA+getSeaLevel(),currentN2,currentHe,1.0);
+        }
+        return chagned;
+    }
+
+    private double performAscend(double stop) {
+        System.out.println("asc from "+currentDepth+" to "+stop);
+        setGfAtDepth(currentDepth);
+        while(currentDepth>stop){
+             currentDepth-=ascRate*dt;
+             if(currentDepth<=stop){
+                 currentDepth=stop;
+                 truncateCurrentTime();
+             }else{
+                 updatePressure(currentDepth/zhl16.ATA+getSeaLevel(),currentN2,currentHe,dt);
+             }
+             if(updateCurrentGas()){
+                 //TODO - адекватно определить глубину и выровнять время
+                DiveRecord recordLog=new DiveRecord(currentDepth,new Gas(1.0-currentN2-currentHe,currentHe,10000.0));
+                recordLog.timeStart=currentTime;
+                updatePressure(currentDepth/zhl16.ATA+getSeaLevel(),currentN2,currentHe,1.0);            
+                recordLog.timeEnd=currentTime; 
+                dive.add(recordLog);
+             }
+             
+         }
+        printCompartments();
+        return getStop();
+    }
+
+    private double performLinear(double stop) {
+        if(stop<getStop()){
+            return getStop();
+        }
+        System.out.println("linear deco at "+stop);
+        currentDepth=stop;
+        updateCurrentGas();
+       // truncateCurrentTime();
+        DiveRecord recordLog=new DiveRecord(currentDepth,new Gas(1.0-currentN2-currentHe,currentHe,10000.0));
+        recordLog.timeStart=currentTime;
+        while(stop==getStop()){
+            updatePressure(currentDepth/zhl16.ATA+getSeaLevel(),currentN2,currentHe,1.0);            
+            recordLog.timeEnd=currentTime;
+        }
+        dive.add(recordLog);
+        printCompartments();
+        return getStop();
     }
 
     
@@ -391,4 +334,87 @@ public class zhl16 {
         }
         return max;
     }
+
+
+
+
+
+    public void cleanAll() {
+        cleanDivePlan();
+        cleanDecoGasList();
+        dive.clear();
+        currentDepth=0.0;
+        currentTime=0.0;
+        currentHe=0.0;
+        currentN2=0.0;
+    }
+
+    public void cleanDive(){
+        dive.clear();
+    }
+    
+    public void cleanDivePlan(){
+        divePlan.clear();
+        iterationsLimit=10000;
+    }
+    
+    public void addPlanRecord(planRecord record){
+        divePlan.add(record);
+    }
+    
+    
+    public void cleanDecoGasList(){
+        decoGasList.clear();
+    }
+    
+    public void addDecoGas(Gas gas){
+        decoGasList.add(gas);
+    }
+    
+    public double getLastStop() {
+        return lastStop;
+    }
+
+    public void setLastStop(double lastStop) {
+        this.lastStop = lastStop;
+    }
+
+    public double getGfLow() {
+        return gfLow;
+    }
+
+    public void setGfLow(double gfLow) {
+        this.gfLow = gfLow;
+    }
+
+    public double getGfHigh() {
+        return gfHigh;
+    }
+
+    public void setGfHigh(double gfHigh) {
+        this.gfHigh = gfHigh;
+    }
+
+    public double getSeaLevel() {
+        return seaLevel;
+    }
+
+    public void setSeaLevel(double seaLevel) {
+        this.seaLevel = seaLevel;
+    }
+
+    public double getDecoStep() {
+        return decoStep;
+    }
+
+    public void setDecoStep(double decoStep) {
+        this.decoStep = decoStep;
+    }
+
+    
+    public static String trunc(double in){
+        return String.valueOf(((double)(new Double(in*100.0).intValue()))/100.0);
+    }
+
+    
 }

@@ -93,11 +93,11 @@ public class main extends javax.swing.JFrame implements Observer{
 
         jLabel3.setText("спуск, м/мин");
 
-        jSpinner3.setModel(new javax.swing.SpinnerNumberModel(18, 1, 50, 1));
+        jSpinner3.setModel(new javax.swing.SpinnerNumberModel(20, 1, 50, 1));
 
         jLabel4.setText("подъем, м/мин");
 
-        jSpinner4.setModel(new javax.swing.SpinnerNumberModel(9, 1, 30, 1));
+        jSpinner4.setModel(new javax.swing.SpinnerNumberModel(10, 1, 30, 1));
 
         jLabel5.setText("<html>Давление на <br> поверности, Па</html>");
 
