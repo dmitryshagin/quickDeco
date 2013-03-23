@@ -79,11 +79,11 @@ public class main extends javax.swing.JFrame implements Observer{
 
         jLabel1.setText("GF lo");
 
-        jSpinner1.setModel(new javax.swing.SpinnerNumberModel(35, 10, 100, 5));
+        jSpinner1.setModel(new javax.swing.SpinnerNumberModel(100, 10, 150, 5));
 
         jLabel2.setText("Gf hi");
 
-        jSpinner2.setModel(new javax.swing.SpinnerNumberModel(80, 10, 100, 5));
+        jSpinner2.setModel(new javax.swing.SpinnerNumberModel(100, 10, 150, 5));
 
         jCheckBox1.setSelected(true);
         jCheckBox1.setText("мгновенный спуск");
@@ -110,19 +110,23 @@ public class main extends javax.swing.JFrame implements Observer{
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jCheckBox2)
-                    .addGroup(jPanel1Layout.createSequentialGroup()
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
+                        .addGap(0, 4, Short.MAX_VALUE)
                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                                .addComponent(jLabel3)
-                                .addComponent(jLabel4))
-                            .addComponent(jLabel5, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jSpinner4, javax.swing.GroupLayout.PREFERRED_SIZE, 78, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(jSpinner3, javax.swing.GroupLayout.PREFERRED_SIZE, 78, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, 78, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                    .addComponent(jCheckBox1)
+                            .addComponent(jCheckBox2)
+                            .addGroup(jPanel1Layout.createSequentialGroup()
+                                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                                    .addComponent(jLabel3)
+                                    .addComponent(jLabel4))
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addComponent(jSpinner4, javax.swing.GroupLayout.PREFERRED_SIZE, 78, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addComponent(jSpinner3, javax.swing.GroupLayout.PREFERRED_SIZE, 78, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                            .addComponent(jCheckBox1)
+                            .addGroup(jPanel1Layout.createSequentialGroup()
+                                .addComponent(jLabel5, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, 78, javax.swing.GroupLayout.PREFERRED_SIZE))))
                     .addGroup(jPanel1Layout.createSequentialGroup()
                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(jLabel2)
@@ -130,8 +134,9 @@ public class main extends javax.swing.JFrame implements Observer{
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(jSpinner1, javax.swing.GroupLayout.PREFERRED_SIZE, 78, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(jSpinner2, javax.swing.GroupLayout.PREFERRED_SIZE, 78, javax.swing.GroupLayout.PREFERRED_SIZE))))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                            .addComponent(jSpinner2, javax.swing.GroupLayout.PREFERRED_SIZE, 78, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addGap(0, 0, Short.MAX_VALUE)))
+                .addContainerGap())
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -143,7 +148,7 @@ public class main extends javax.swing.JFrame implements Observer{
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel2)
                     .addComponent(jSpinner2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jCheckBox1)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jCheckBox2)
@@ -159,7 +164,7 @@ public class main extends javax.swing.JFrame implements Observer{
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                     .addComponent(jLabel5, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addContainerGap(45, Short.MAX_VALUE))
         );
 
         jTable1.setModel(new javax.swing.table.DefaultTableModel(
@@ -278,7 +283,7 @@ public class main extends javax.swing.JFrame implements Observer{
         updateDeco();
     }
 
-    
+
     private double getInitPressure(){
         double res=10.1325;
         try{
@@ -334,7 +339,7 @@ public class main extends javax.swing.JFrame implements Observer{
             
         }
         
-        deco.applyDeco(0.0);
+        deco.applyDeco(0.1);
 
         
         for(DiveRecord record:deco.dive){
@@ -363,184 +368,4 @@ public class main extends javax.swing.JFrame implements Observer{
         return trunc((depth+10.0)*gas.O2/10);
     }
     
-    /*
-    public void updateDeco__() {
-        int iterationsLimit=10000;
-        double segStart=0.0,segEnd;
-        double dt=1.0;
-        double currentDepth=0.0, currentN2Percent=0.0, currentHePercent=0.0, currentO2Percent=0.0, currentTime=0.0;
-        double segTime,segDepth,segHe,segN2;
-        boolean firstSeg=true;
-        String gas="";
-        
-        
-        
-        while(jTable1.getRowCount()>0){
-            ((DefaultTableModel)jTable1.getModel()).removeRow(0);
-        }
-        
-        deco.init(getInitPressure());
-        deco.setLastStop(jCheckBox2.isSelected()?6.0:3.0);
-        deco.setGfLow(((Integer)jSpinner1.getValue())/100.0);
-        deco.setGfHigh(((Integer)jSpinner2.getValue())/100.0);
-        deco.cleanAll();
-        deco.ascRate=Double.valueOf((Integer)jSpinner4.getValue());
-        deco.descRate=Double.valueOf((Integer)jSpinner3.getValue());
-
-        
-        
-        for(int i=0;i<planPanel1.jpAtoms.getComponentCount();i++){
-            PlanAtom atom=(PlanAtom)planPanel1.jpAtoms.getComponent(i);
-            
-            segDepth=atom.getDepth();
-            segHe=atom.getHe();
-            segN2=1.0-atom.getO2()-segHe;
-            segTime=atom.getTime();
-            if(atom.getO2()>0.0&&segN2>=0.0&&segDepth>=0.0&&segTime>=0.0){
-                while(currentDepth<segDepth){
-                    //если выбран мгновенный спуск к первому сегменту - то пропускаем этот шаг
-                    if(!(jCheckBox1.isSelected()&&firstSeg)){
-                        currentDepth+=((Integer)jSpinner3.getValue());
-                        if(currentDepth>segDepth){
-                            currentDepth=segDepth;
-                        }
-                        deco.updatePressure(currentDepth/zhl16.ATA+deco.getSeaLevel(),segN2,segHe,dt);
-                        currentTime+=dt;
-                        segStart=currentTime;
-                    }else{
-                        currentDepth=segDepth;
-                    }
-                };
-                firstSeg=false;
-                
-                while(segDepth<currentDepth){
-                    //TODO - дека на подъемах между сегментами
-                    currentDepth-=((Integer)jSpinner4.getValue());
-                    if(currentDepth<segDepth){
-                        currentDepth=segDepth;
-                    }
-                    deco.updatePressure(currentDepth/zhl16.ATA+deco.getSeaLevel(),segN2,segHe,dt);
-                    currentTime+=dt;
-                    segStart=currentTime;
-                }
-                deco.updatePressure(currentDepth/zhl16.ATA+deco.getSeaLevel(),segN2,segHe,segTime);
-                currentN2Percent=segN2;
-                currentO2Percent=atom.getO2();
-                currentHePercent=segHe;
-                currentTime+=segTime;
-                segEnd=currentTime;
-                
-                gas+=Integer.toString(new BigDecimal(currentO2Percent*100.0).intValue());
-                if(currentHePercent>=0.01){
-                    gas+="/"+Integer.toString(new BigDecimal(currentHePercent*100.0).intValue());
-                }
-                ((DefaultTableModel)jTable1.getModel()).addRow(new Object [] {trunc(currentDepth),trunc(segEnd-segStart),trunc((segStart)),trunc(segEnd),gas,ppO2(gas,currentDepth)});
-                
-            }
-            
-            deco.setGfSlopeAtDepth(currentDepth);
-            
-        }
-
-
-        
-        deco.setGfAtDepth(currentDepth);
-        double currStop=deco.getStop();
-        double oldStop=currentDepth;
-        double stopTime=0.0;
-        double lastTime=0.0;
-        
-        lastTime=0.0;
-        int row=0;
-
-        boolean decoStarted=false;
-
-
-        while(currStop>0.0&&iterationsLimit>0){//очень упрощенная дека
-
-            iterationsLimit--;
-            currStop=deco.getStop();
-            
-            
-             while(currentDepth>currStop){
-                currentDepth-=((Integer)jSpinner4.getValue());
-                if(currentDepth<currStop){
-                    currentDepth=currStop;
-                }
-                deco.setGfAtDepth(currentDepth);
-                deco.updatePressure(currentDepth/zhl16.ATA+deco.getSeaLevel(),currentN2Percent,currentHePercent,dt);
-                currentTime+=dt;
-                segStart=currentTime;
-            }
-            
-            
-            if(oldStop!=currStop){
-                stopTime=currentTime-lastTime;
-
-                
-                if(decoStarted){
-                    ((DefaultTableModel)jTable1.getModel()).addRow(new Object [] {trunc(oldStop),trunc(stopTime),trunc((currentTime-stopTime)),trunc(currentTime),gas,ppO2(gas,oldStop)});
-                }
-                decoStarted=true;
-                lastTime=currentTime;
-                oldStop=currStop;
-                row++;
-            }
-            
-            double selectedDepth=2000.0;
-            for(int i=0;i<decoGasPanel1.jpAtoms.getComponentCount();i++){
-                DecoGasAtom atom=(DecoGasAtom)decoGasPanel1.jpAtoms.getComponent(i);
-                if(atom.isTurnedOn()){
-                    if(currStop<=atom.getDepth()&&atom.getHe()>=0.0&&atom.getO2()>=0.0){
-                        if(selectedDepth>=atom.getDepth()){
-                            selectedDepth=atom.getDepth();
-                            currentHePercent=atom.getHe();
-                            currentO2Percent=atom.getO2();
-                            currentN2Percent=1.0-currentO2Percent-currentHePercent;
-                            gas="";
-                            gas+=Integer.toString(new BigDecimal(currentO2Percent*100.0).intValue());
-                            if(currentHePercent>=0.01){
-                                gas+="/"+Integer.toString(new BigDecimal(currentHePercent*100.0).intValue());
-                            }
-                            //System.out.println("gas "+gas+" for "+currentDepth);
-                        }
-                    }
-                }
-            }
-            
-            deco.setGfAtDepth(currentDepth);
-            deco.updatePressure(currentDepth/zhl16.ATA+deco.getSeaLevel(),currentN2Percent,currentHePercent,dt);
-            
-            
-            currentTime+=dt;
-        }
-        
-        if(iterationsLimit==0){
-            jTable1.setBackground(Color.RED);
-        }else{
-            jTable1.setBackground(defaultBackground);
-            
-        }
-
-        System.out.println("Total time:"+(currentTime));
-
-    }
-
-    private String ppO2(String gas,double depth) {
-         int o2=0;
-        if(gas.trim().length()>1){
-            if(gas.contains("/")){
-                try{
-                    o2=Integer.parseInt(gas.trim().substring(0, gas.trim().indexOf("/")));
-                }catch(Exception ex){
-                }
-            }else{
-                try{
-                    o2=Integer.parseInt(gas.trim());
-                }catch(Exception ex){
-                }
-            }
-        }
-        return String.valueOf(((depth+10.0)*o2/1000));
-    }*/
 }

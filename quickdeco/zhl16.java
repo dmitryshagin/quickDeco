@@ -16,8 +16,8 @@ public class zhl16 {
     private double WaterPour=0.567;//давлние водяного пара
     private double decoStep=3.0;
     private double lastStop=3.0;
-    public double descRate=18.0;
-    public double ascRate=9.0;
+    public double descRate=20.0;
+    public double ascRate=10.0;
     public double currentDepth=0.0;
     public Double currentTime=0.0;
     public double currentN2=0.0;
@@ -27,7 +27,6 @@ public class zhl16 {
     private double gf=gfLow;
     private double gfSlope=1.0;
     private double seaLevel=10.1325;
-    public static final double ATA=1.01325;
     public static final int COMPARTMENTS=17;
 
     
@@ -95,7 +94,32 @@ public class zhl16 {
         {02.523, 0.9602, 05.172, 0.9217},
         {02.327, 0.9653, 05.119, 0.9267}
     };
+    
+    
+/*    zh_l16 : array [1..16, 1..8] of double = - from tausim
 
+      (* t1/2 N2   ZH-L16A theoretisch    ZH-L16B     ZH-L16   t1/2 He                     *)
+      (*           -------------------    Tabelle    Computer                              *)
+      (*  [min]       b           a          a           a      [min]       b          a   *)
+
+    (
+      (   4.0,     0.5050,      1.2599,    1.2599,    1.2599,    1.51,    0.4245,    1.7424),
+      (   8.0,     0.6514,      1.0000,    1.0000,    1.0000,    3.02,    0.5747,    1.3830),
+      (  12.5,     0.7222,      0.8618,    0.8618,    0.8618,    4.72,    0.6527,    1.1919),
+      (  18.5,     0.7825,      0.7562,    0.7562,    0.7562,    6.99,    0.7223,    1.0458),
+      (  27.0,     0.8126,      0.6667,    0.6667,    0.6200,   10.21,    0.7582,    0.9220),
+      (  38.3,     0.8434,      0.5933,    0.5600,    0.5043,   14.48,    0.7957,    0.8205),
+      (  54.3,     0.8693,      0.5282,    0.4947,    0.4410,   20.53,    0.8279,    0.7305),
+      (  77.0,     0.8910,      0.4701,    0.4500,    0.4000,   29.11,    0.8553,    0.6502),
+      ( 109.0,     0.9092,      0.4187,    0.4187,    0.3750,   41.20,    0.8757,    0.5950),
+      ( 146.0,     0.9222,      0.3798,    0.3798,    0.3500,   55.19,    0.8903,    0.5545),
+      ( 187.0,     0.9319,      0.3497,    0.3497,    0.3295,   70.69,    0.8997,    0.5333),
+      ( 239.0,     0.9403,      0.3223,    0.3223,    0.3065,   90.34,    0.9073,    0.5189),
+      ( 305.0,     0.9477,      0.2971,    0.2850,    0.2835,  115.29,    0.9122,    0.5181),
+      ( 390.0,     0.9544,      0.2737,    0.2737,    0.2610,  147.42,    0.9171,    0.5176),
+      ( 498.0,     0.9602,      0.2523,    0.2523,    0.2480,  188.24,    0.9217,    0.5172),
+      ( 635.0,     0.9653,      0.2327,    0.2327,    0.2327,  240.03,    0.9267,    0.5119)  );*/
+    
     
     // Compartiment half-life, in minute
     //  N2     He 
@@ -127,7 +151,7 @@ public class zhl16 {
     private void truncateCurrentTime(){
         currentTime=((double)(new Double(currentTime*10.0).intValue()))/10.0;
         while(((new Double(currentTime*10.0).intValue())%10!=0)){
-            this.updatePressure(currentDepth/zhl16.ATA+this.getSeaLevel(),currentN2,currentHe,dt);
+            this.updatePressure(currentDepth+this.getSeaLevel(),currentN2,currentHe,dt);
         }
         currentTime=((double)(new Double(currentTime*10.0).intValue()))/10.0;
     }
@@ -144,7 +168,7 @@ public class zhl16 {
                     if(currentDepth>=record.depth){
                         currentDepth=record.depth;
                     }
-                    this.updatePressure(currentDepth/zhl16.ATA+this.getSeaLevel(),currentN2,currentHe,dt);
+                    this.updatePressure(currentDepth+this.getSeaLevel(),currentN2,currentHe,dt);
             }
         }else{
             currentDepth=record.depth;
@@ -158,7 +182,7 @@ public class zhl16 {
             if(currentDepth<=record.depth){
                 currentDepth=record.depth;
             }
-            this.updatePressure(currentDepth/zhl16.ATA+this.getSeaLevel(),currentN2,currentHe,dt);
+            this.updatePressure(currentDepth+this.getSeaLevel(),currentN2,currentHe,dt);
         }
         
         truncateCurrentTime();
@@ -167,9 +191,9 @@ public class zhl16 {
         recordLogSeg.timeStart=currentTime;
         if(dive.isEmpty()){
             //для первого сегмента учтем возможность мгновенного спуска
-            updatePressure(record.depth/zhl16.ATA+getSeaLevel(),currentN2,currentHe,record.time-currentTime);
+            updatePressure(record.depth+getSeaLevel(),currentN2,currentHe,record.time-currentTime);
         }else{
-            updatePressure(record.depth/zhl16.ATA+getSeaLevel(),currentN2,currentHe,record.time);
+            updatePressure(record.depth+getSeaLevel(),currentN2,currentHe,record.time);
         }
         setGfSlopeAtDepth(record.depth);
         setGfAtDepth(currentDepth);
@@ -221,13 +245,13 @@ public class zhl16 {
                  currentDepth=stop;
                  truncateCurrentTime();
              }else{
-                 updatePressure(currentDepth/zhl16.ATA+getSeaLevel(),currentN2,currentHe,dt);
+                 updatePressure(currentDepth+getSeaLevel(),currentN2,currentHe,dt);
              }
              if(updateCurrentGas()){
                  //TODO - адекватно определить глубину и выровнять время
                 DiveRecord recordLog=new DiveRecord(currentDepth,new Gas(1.0-currentN2-currentHe,currentHe,10000.0));
                 recordLog.timeStart=currentTime;
-                updatePressure(currentDepth/zhl16.ATA+getSeaLevel(),currentN2,currentHe,1.0);            
+                updatePressure(currentDepth+getSeaLevel(),currentN2,currentHe,1.0);            
                 recordLog.timeEnd=currentTime; 
                 dive.add(recordLog);
              }
@@ -248,7 +272,7 @@ public class zhl16 {
         DiveRecord recordLog=new DiveRecord(currentDepth,new Gas(1.0-currentN2-currentHe,currentHe,10000.0));
         recordLog.timeStart=currentTime;
         while(stop==getStop()){
-            updatePressure(currentDepth/zhl16.ATA+getSeaLevel(),currentN2,currentHe,1.0);            
+            updatePressure(currentDepth+getSeaLevel(),currentN2,currentHe,1.0);            
             recordLog.timeEnd=currentTime;
         }
         dive.add(recordLog);
@@ -304,8 +328,11 @@ public class zhl16 {
     
     public void updatePressure(double currentPa,double PnPercent,double PhePercent,double dt){
         for(int i=0;i<COMPARTMENTS;i++){
-            Pn[i]=calcCompartmentPressure(GasType.Nitrogen,Pn[i],currentPa*PnPercent,dt,i);
-            Ph[i]=calcCompartmentPressure(GasType.Helium,Ph[i],currentPa*PhePercent,dt,i);
+            //water paur - I'm wondering why everybody uses both N2 and He for 
+            //this calculation, but I'll do the same - just to generate same
+            //profile like GUE DecoPlanner does
+            Pn[i]=calcCompartmentPressure(GasType.Nitrogen,Pn[i],(currentPa-WaterPour)*PnPercent,dt,i);
+            Ph[i]=calcCompartmentPressure(GasType.Helium,Ph[i],(currentPa-WaterPour)*PhePercent,dt,i);
         }
         currentTime+=dt;
     }
@@ -334,10 +361,6 @@ public class zhl16 {
         }
         return max;
     }
-
-
-
-
 
     public void cleanAll() {
         cleanDivePlan();
@@ -409,6 +432,14 @@ public class zhl16 {
 
     public void setDecoStep(double decoStep) {
         this.decoStep = decoStep;
+    }
+
+    public double getWaterPour() {
+        return WaterPour;
+    }
+
+    public void setWaterPour(double WaterPour) {
+        this.WaterPour = WaterPour;
     }
 
     
